@@ -1,0 +1,49 @@
+{% load staticfiles %} 
+<html>
+  <head>
+    <style type="text/css">
+    .outer { witdh: 100%; text-align: center; }
+    .inner { display: inline-block; }
+    </style>
+    <!--<link href="{% static "css/c3.min.css" %}" rel="stylesheet" type="text/css">-->
+    <!--<script type="text/javascript" src="{% static "js/d3.min.js" %}" charset="utf-8"></script>-->
+    <!--<script type="text/javascript" src="{% static "js/c3.min.js" %}" charset="utf-8"></script>-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.css" rel="stylesheet" type="text/css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" charset="utf-8"></script>
+<script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/c3/0.4.9/c3.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript">
+$(function() {
+	var chart = c3.generate({
+	    bindto: '#chart',
+	    data: {
+              x: 'x',
+              xFormat: '%H:%M:%S',
+	      columns: [
+		  ['x',  {% for data in latest_data %} '{{ data.time }}', {% endfor %}],
+		  ['temperature',  {% for data in latest_data %} {{ data.temperature }}, {% endfor %}],
+		  ['humidity',  {% for data in latest_data %} {{ data.humidity }}, {% endfor %}],
+	      ],
+	    },
+axis: {
+x: { type: 'timeseries', tick: { format: '%H:%M:%S'} }
+}
+	});
+});
+    </script>
+  </head>
+  <body>
+    {% for data in latest_data %}
+      {% if forloop.last %}
+      <div class="outer">
+        <div class="inner">현재 온도: {{ data.temperature }} </div>
+        <div class="inner">현재 습도: {{ data.humidity }}</div>
+        <div class="inner">측정 시간: {{ data.time }}</div>
+     </div>
+      {% endif %}
+    {% endfor %}
+    <div id="chart"></div>
+  </body>
+</html>
+

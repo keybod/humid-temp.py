@@ -1,0 +1,49 @@
+ <html>
+  <head>
+    <style type="text/css">
+    .outer { witdh: 100%; text-align: center; }
+    .inner { display: inline-block; }
+    </style>
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+
+    <script type="text/javascript">
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['DateTime', 'Temperature', 'Humidity'],
+          {% for data in latest_data %}
+          ['{{ data.time }}', {{ data.temperature }}, {{ data.humidity }} ],
+          {% endfor %}
+        ]);
+
+        var options = {
+          title: 'Temp-Humid',
+          legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    {% for data in latest_data %}
+      {% if forloop.last %}
+      <div class="outer">
+        <div class="inner">현재 온도: {{ data.temperature }} </div>
+        <div class="inner">현재 습도: {{ data.humidity }}</div>
+     </div>
+      {% endif %}
+    {% endfor %}
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+  </body>
+</html>
+
